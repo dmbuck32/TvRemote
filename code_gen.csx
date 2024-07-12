@@ -138,6 +138,10 @@ public class TvRemoteRenderConfig : IRenderConfigC
         string channel_decrement() => $"{VarsPath}channel--; if ({VarsPath}channel < MIN_CHANNEL) {{ {VarsPath}channel = MAX_CHANNEL; }}";
 
         string show(string message) => $"""printf({message})""";
+
+        string print_volume() => $"printf({VarsPath}volume)";
+        string print_brightness() => $"printf({VarsPath}brightness)";
+        string print_channel() => $"printf({VarsPath}channel)";
     }
 }
 
@@ -224,5 +228,9 @@ public class TvRemoteJsRenderConfig : IRenderConfig
         string channel_decrement() => $"{VarsPath}channel--; if ({VarsPath}channel < MIN_CHANNEL) {{ {VarsPath}channel = MAX_CHANNEL; }}";
 
         string show(string message) => $"console.log({message})";
+
+        string print_volume() => $"console.log({VarsPath}volume)";
+        string print_brightness() => $"console.log({VarsPath}brightness)";
+        string print_channel() => $"console.log({VarsPath}channel)";
     }
 }
