@@ -1,0 +1,5 @@
+# Ignore generated code
+ButtonSm.c
+ButtonSm.h
+TvRemoteSm.c
+TvRemoteSm.h
