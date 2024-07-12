@@ -1,5 +1,7 @@
 # Ignore generated code
 ButtonSm.c
 ButtonSm.h
+ButtonSm.js
 TvRemoteSm.c
 TvRemoteSm.h
+TvRemoteSm.js

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+    <!-- generated state machine files -->
+    <script src="TvRemoteSm.js"></script>
+    <script src="long-press-event.min.js"></script>
+    <script>
+        let tvStateMachine = new TvRemoteSm();
+        tvStateMachine.start();
+
+        function pressButton(sm, event) {
+            sm.dispatchEvent(event);
+        }
+        document.addEventListener('long-press', function(e) {
+                if (e.target.dataset.name === "B1") {
+                    tvStateMachine.dispatchEvent(TvRemoteSm.EventId.B1_LONG_PRESS);
+                } else {
+                    tvStateMachine.dispatchEvent(TvRemoteSm.EventId.B2_LONG_PRESS);
+                }
+            });
+
+
+    </script>
+    <body>
+        <button 
+            data-long-press-delay="800" 
+            data-name="B1" 
+            onclick=tvStateMachine.dispatchEvent(TvRemoteSm.EventId.B1)>B1</button>
+        <button 
+            data-long-press-delay="800" 
+            data-name="B2" 
+            onclick="tvStateMachine.dispatchEvent(TvRemoteSm.EventId.B2)">B2</button>
+        <!-- <button 
+            data-long-press-delay="800"
+            data-name="B1"
+            onpointerdown=press(tvStateMachine, TvRemoteSm.EventId.B1)
+            long-press=longPress(tvStateMachine, TvRemoteSm.EventId.B1_LONG_PRESS)>B1</button>
+        <button 
+            data-long-press-delay="800"
+            data-name="B2"
+            onpointerdown=press(tvStateMachine, TvRemoteSm.EventId.B2)
+            long-press=longPress(tvStateMachine, TvRemoteSm.EventId.B2_LONG_PRESS)>B2</button> -->
+
+    </body>
+</html>
