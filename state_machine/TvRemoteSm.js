@@ -931,12 +931,12 @@ class TvRemoteSm
         this.#currentEventHandlers[TvRemoteSm.EventId.B2_PRESS] = this.#VOLUME_DOWN_b2_press;
         
         // VOLUME_DOWN behavior
-        // uml: enter / { show("Volume Down");\nvolume_decrement();\nprint_volume() }
+        // uml: enter / { show("Volume Down");\nvolume_decrement();\nprint_volume(); }
         {
-            // Step 1: execute action `show("Volume Down");\nvolume_decrement();\nprint_volume()`
+            // Step 1: execute action `show("Volume Down");\nvolume_decrement();\nprint_volume();`
             console.log("Volume Down");
             if (this.vars.volume > MIN_VOLUME) { this.vars.volume--; };
-            console.log(this.vars.volume)
+            console.log(this.vars.volume);
         } // end of behavior for VOLUME_DOWN
     }
     

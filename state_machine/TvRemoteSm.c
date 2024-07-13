@@ -1001,12 +1001,12 @@ static void VOLUME_DOWN_enter(TvRemoteSm* sm)
     sm->current_event_handlers[TvRemoteSm_EventId_B2_PRESS] = VOLUME_DOWN_b2_press;
     
     // VOLUME_DOWN behavior
-    // uml: enter / { show("Volume Down");\nvolume_decrement();\nprint_volume() }
+    // uml: enter / { show("Volume Down");\nvolume_decrement();\nprint_volume(); }
     {
-        // Step 1: execute action `show("Volume Down");\nvolume_decrement();\nprint_volume()`
+        // Step 1: execute action `show("Volume Down");\nvolume_decrement();\nprint_volume();`
         printf("Volume Down");
         if (sm->vars.volume > MIN_VOLUME) { sm->vars.volume--; };
-        printf("%d", sm->vars.volume)
+        printf("%d", sm->vars.volume);
     } // end of behavior for VOLUME_DOWN
 }
 
