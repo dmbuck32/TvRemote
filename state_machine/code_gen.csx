@@ -146,11 +146,11 @@ public class TvRemoteRenderConfig : IRenderConfigC
         string channel_increment() => $"{VarsPath}channel++; if ({VarsPath}channel > MAX_CHANNEL) {{ {VarsPath}channel = MIN_CHANNEL; }}";
         string channel_decrement() => $"{VarsPath}channel--; if ({VarsPath}channel < MIN_CHANNEL) {{ {VarsPath}channel = MAX_CHANNEL; }}";
 
-        string show(string message) => $"""printf({message})""";
+        string show(string message) => $"""printf({message} "\n")""";
 
-        string print_volume() => $"""printf("%d", {VarsPath}volume)""";
-        string print_brightness() => $"""printf("%d", {VarsPath}brightness)""";
-        string print_channel() => $"""printf("%d", {VarsPath}channel)""";
+        string print_volume() => $"""printf("%d\n", {VarsPath}volume)""";
+        string print_brightness() => $"""printf("%d\n", {VarsPath}brightness)""";
+        string print_channel() => $"""printf("%d\n", {VarsPath}channel)""";
     }
 }
 

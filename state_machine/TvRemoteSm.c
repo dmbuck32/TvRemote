@@ -222,7 +222,7 @@ static void TV_OFF_enter(TvRemoteSm* sm)
     // uml: enter / { show("TV OFF"); }
     {
         // Step 1: execute action `show("TV OFF");`
-        printf("TV OFF");
+        printf("TV OFF" "\n");
     } // end of behavior for TV_OFF
 }
 
@@ -280,7 +280,7 @@ static void TV_ON_enter(TvRemoteSm* sm)
     // uml: enter / { show("TV ON"); }
     {
         // Step 1: execute action `show("TV ON");`
-        printf("TV ON");
+        printf("TV ON" "\n");
     } // end of behavior for TV_ON
 }
 
@@ -328,7 +328,7 @@ static void BRIGHTNESS_CHANGE_enter(TvRemoteSm* sm)
     // uml: enter / { show("Brightness Change"); }
     {
         // Step 1: execute action `show("Brightness Change");`
-        printf("Brightness Change");
+        printf("Brightness Change" "\n");
     } // end of behavior for BRIGHTNESS_CHANGE
 }
 
@@ -441,9 +441,9 @@ static void BRIGHTNESS_DOWN_enter(TvRemoteSm* sm)
     // uml: enter / { show("Brightness Down");\nbrightness_decrement();\nprint_brightness(); }
     {
         // Step 1: execute action `show("Brightness Down");\nbrightness_decrement();\nprint_brightness();`
-        printf("Brightness Down");
+        printf("Brightness Down" "\n");
         if (sm->vars.brightness > MIN_BRIGHTNESS) { sm->vars.brightness--; };
-        printf("%d", sm->vars.brightness);
+        printf("%d\n", sm->vars.brightness);
     } // end of behavior for BRIGHTNESS_DOWN
 }
 
@@ -515,9 +515,9 @@ static void BRIGHTNESS_UP_enter(TvRemoteSm* sm)
     // uml: enter / { show("Brightness Up");\nbrightness_increment();\nprint_brightness(); }
     {
         // Step 1: execute action `show("Brightness Up");\nbrightness_increment();\nprint_brightness();`
-        printf("Brightness Up");
+        printf("Brightness Up" "\n");
         if (sm->vars.brightness < MAX_BRIGHTNESS) { sm->vars.brightness++; };
-        printf("%d", sm->vars.brightness);
+        printf("%d\n", sm->vars.brightness);
     } // end of behavior for BRIGHTNESS_UP
 }
 
@@ -588,7 +588,7 @@ static void CHANNEL_SELECT_enter(TvRemoteSm* sm)
     // uml: enter / { show("Channel Select"); }
     {
         // Step 1: execute action `show("Channel Select");`
-        printf("Channel Select");
+        printf("Channel Select" "\n");
     } // end of behavior for CHANNEL_SELECT
 }
 
@@ -648,9 +648,9 @@ static void CHANNEL_DOWN_enter(TvRemoteSm* sm)
     // uml: enter / { show("Channel Down");\nchannel_decrement();\nprint_channel(); }
     {
         // Step 1: execute action `show("Channel Down");\nchannel_decrement();\nprint_channel();`
-        printf("Channel Down");
+        printf("Channel Down" "\n");
         sm->vars.channel--; if (sm->vars.channel < MIN_CHANNEL) { sm->vars.channel = MAX_CHANNEL; };
-        printf("%d", sm->vars.channel);
+        printf("%d\n", sm->vars.channel);
     } // end of behavior for CHANNEL_DOWN
 }
 
@@ -787,9 +787,9 @@ static void CHANNEL_UP_enter(TvRemoteSm* sm)
     // uml: enter / { show("Channel Up");\nchannel_increment();\nprint_channel(); }
     {
         // Step 1: execute action `show("Channel Up");\nchannel_increment();\nprint_channel();`
-        printf("Channel Up");
+        printf("Channel Up" "\n");
         sm->vars.channel++; if (sm->vars.channel > MAX_CHANNEL) { sm->vars.channel = MIN_CHANNEL; };
-        printf("%d", sm->vars.channel);
+        printf("%d\n", sm->vars.channel);
     } // end of behavior for CHANNEL_UP
 }
 
@@ -860,7 +860,7 @@ static void VOLUME_CHANGE_enter(TvRemoteSm* sm)
     // uml: enter / { show("Volume Change"); }
     {
         // Step 1: execute action `show("Volume Change");`
-        printf("Volume Change");
+        printf("Volume Change" "\n");
     } // end of behavior for VOLUME_CHANGE
 }
 
@@ -1004,9 +1004,9 @@ static void VOLUME_DOWN_enter(TvRemoteSm* sm)
     // uml: enter / { show("Volume Down");\nvolume_decrement();\nprint_volume(); }
     {
         // Step 1: execute action `show("Volume Down");\nvolume_decrement();\nprint_volume();`
-        printf("Volume Down");
+        printf("Volume Down" "\n");
         if (sm->vars.volume > MIN_VOLUME) { sm->vars.volume--; };
-        printf("%d", sm->vars.volume);
+        printf("%d\n", sm->vars.volume);
     } // end of behavior for VOLUME_DOWN
 }
 
@@ -1078,9 +1078,9 @@ static void VOLUME_UP_enter(TvRemoteSm* sm)
     // uml: enter / { show("Volume Up");\nvolume_increment();\nprint_volume(); }
     {
         // Step 1: execute action `show("Volume Up");\nvolume_increment();\nprint_volume();`
-        printf("Volume Up");
+        printf("Volume Up" "\n");
         if (sm->vars.volume < MAX_VOLUME) { sm->vars.volume++; };
-        printf("%d", sm->vars.volume);
+        printf("%d\n", sm->vars.volume);
     } // end of behavior for VOLUME_UP
 }
 
