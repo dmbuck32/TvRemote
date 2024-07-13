@@ -3,10 +3,5 @@
         {
             "file": "${workspaceFolder}/.vscode/StateSmith-drawio-plugin-v0.6.0.js"
         }
-    ],
-    "files.associations": {
-        "buttonsm.h": "c",
-        "tvremotesm.h": "c",
-        "time_utils.h": "c"
-    },
+    ]
 }

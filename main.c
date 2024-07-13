@@ -1,16 +1,16 @@
-#include <errno.h>
-#include <fcntl.h>
-#include <linux/input.h>
-#include <ncurses.h>
-#include <state_machine/TvRemoteSm.h>
-#include <stddef.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <sys/time.h>
-#include <termios.h>
-#include <time.h>
-#include <unistd.h>
+#include <errno.h> // for errno
+#include <fcntl.h> // for open
+#include <linux/input.h> // for input_event
+#include <stdbool.h> // for bool
+#include <stdio.h> // for fprint
+#include <stdlib.h> // for EXIT_FAILURE & EXIT_SUCCESS
+#include <string.h> // for strerror
+#include <termios.h> // for termios
+#include <time.h> // for nanosleep
+#include <unistd.h> // for read & STDIN_FILENO
+
+// The state machine for the TV remote.
+#include "state_machine/TvRemoteSm.h"
 
 // Key codes for B1 & B2.
 #define B1_CODE 17 // w

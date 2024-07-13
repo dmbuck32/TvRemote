@@ -2,6 +2,25 @@
 
 This is a simulated low-cost 2-button television remote control.
 
+## Building & Usage
+
+The application uses cmake to compile the code. The following instructions can be used to compile the code:
+
+```sh
+    mkdir build
+    cd build
+    cmake ..
+    make
+```
+
+Once compiled, the application needs to be run as root using the following command:
+
+```sh
+    sudo ./remote
+```
+
+This will start the program with the "TV" in the `OFF` state. The instructions for navigating between the states can be found in the [Functional Description](#functional-description).
+
 ## Requirements
 
 This remote control has the following requirements and design constraints:
@@ -24,6 +43,7 @@ The following assumptions are present in this application:
 - The channel range is from [1, 256] inclusive
 - The channel change logic will wrap around (i.e channel up at 256 will go to 1)
 - The long-press timeout is 800 ms
+- The script will be run with root permissions (needed to read the keyboard events)
 
 ## Functional Description
 
