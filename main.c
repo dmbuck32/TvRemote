@@ -1,4 +1,3 @@
-// #include <state_machine/ButtonSm.h>
 #include <errno.h>
 #include <fcntl.h>
 #include <linux/input.h>
@@ -13,48 +12,11 @@
 #include <unistd.h>
 #include "time_utils.h"
 
-static const char *const evval[3] = {
-    "RELEASED",
-    "PRESSED ",
-    "REPEATED"
-};
-
-// const unsigned int B1 = 119; // w
-// const unsigned int B2 = 115; // b
 #define B1_CODE 17 // w
 #define B2_CODE 31 // b
 #define RELEASED_EVENT 0
 #define PRESSED_EVENT 1
 #define REPEATED_EVENT 2
-
-// // https://stackoverflow.com/questions/4025891/create-a-function-to-check-for-key-press-in-unix-using-ncurses
-// int kbhit(void)
-// {
-//     const int ch = getch();
-//     if (ch != ERR) {
-//         ungetch(ch);
-//         return 1;
-//     }
-//     return 0;
-// }
-
-// int button_hit(int button) 
-// {
-//     const int ch = getch();
-//     if (ch == ERR)
-//     {
-//         return 0;
-//     }
-//     if (ch != button) 
-//     {
-//         ungetch(ch);
-//         return 0;
-//     }
-//     return 1;
-// }
-
-// int b1_hit(void) { return button_hit(B1); }
-// int b2_hit(void) { return button_hit(B2); }
 
 // https://stackoverflow.com/questions/1157209/is-there-an-alternative-sleep-function-in-c-to-milliseconds
 /* msleep(): Sleep for the requested number of milliseconds. */
@@ -79,26 +41,85 @@ int msleep(long msec)
     return res;
 }
 
-unsigned long long b1_press_start = 0;
-unsigned int b1_press_count = 0;
-bool b1_pressed = false;
-bool b1_long_press = false;
+const unsigned int LONG_PRESS_TIMEOUT = 800; // ms.
 
-unsigned long long b2_press_start = 0;
-unsigned int b2_press_count = 0;
-bool b2_pressed = false;
-bool b2_long_press = false;
+typedef struct KeyState {
+    unsigned long long press_start_time;
+    bool pressed;
+    bool long_press;
+    int press_event;
+    int long_press_event;
+} KeyState;
+
+void handle_button_press(int value, KeyState* key, TvRemoteSm* remote) {
+
+    // printw("%d\n", value);
+    switch (value)
+    {
+        case RELEASED_EVENT:
+        {
+            key->pressed = false;
+            key->long_press = false;
+            break;
+        }
+        case PRESSED_EVENT:
+        {
+            //printw("B1 PRESS\n");
+            if (!key->pressed)
+            {
+                key->pressed = true;
+                key->press_start_time = timeInMilliseconds();
+                TvRemoteSm_dispatch_event(remote, key->press_event);
+            }
+            break;
+        }
+        case REPEATED_EVENT:
+        {
+            if (!key->long_press)
+            {
+                if ((timeInMilliseconds() - key->press_start_time) > LONG_PRESS_TIMEOUT)
+                {
+                    key->long_press = true;
+                    TvRemoteSm_dispatch_event(remote, key->long_press_event);
+                }
+            }
+            break;
+        }
+        default:
+            break;
+    }
+    return;
+}
 
 int main(int argc, char ** argv)
 {
-    // ButtonSm B1;
-    // ButtonSm B2;
+    // init screen and sets up screen
+    initscr();
+    // Don't echo key inputs.
+    noecho();
 
+    printw("Initializing TV remote state machine...\n");
     TvRemoteSm TvRemote;
     TvRemoteSm_ctor(&TvRemote);
     TvRemoteSm_start(&TvRemote);
 
+    printw("Initalizing keys...\n");
+    KeyState b1 = {
+        .pressed = false,
+        .press_start_time = 0,
+        .long_press = false,
+        .press_event = TvRemoteSm_EventId_B1_PRESS,
+        .long_press_event = TvRemoteSm_EventId_B1_LONG_PRESS
+    };
+    KeyState b2 = {
+        .pressed = false,
+        .press_start_time = 0,
+        .long_press = false,
+        .press_event = TvRemoteSm_EventId_B2_PRESS,
+        .long_press_event = TvRemoteSm_EventId_B2_LONG_PRESS
+    };
 
+    printw("Initializing key reader...\n");
     const char *dev = "/dev/input/by-path/platform-i8042-serio-0-event-kbd";
     struct input_event ev;
     ssize_t n;
@@ -110,18 +131,7 @@ int main(int argc, char ** argv)
         return EXIT_FAILURE;
     }
 
-    // // init screen and sets up screen
-    // initscr();
-    // // print to screen
-    // // printw("TV OFF\n");
-
-    // // Setup non-blocking mode.
-    // cbreak();
-    // noecho();
-    // nodelay(stdscr, true);
-
-    // scrollok(stdscr, true);
-
+    printw("Starting loop.\n");
     while(true)
     {
         n = read(fd, &ev, sizeof ev);
@@ -141,118 +151,21 @@ int main(int argc, char ** argv)
             {
             case B1_CODE:
             {
-                switch (ev.value)
-                {
-                case PRESSED_EVENT:
-                {
-                    //printf("B1 PRESS\n");
-                    TvRemoteSm_dispatch_event(&TvRemote, TvRemoteSm_EventId_B1_PRESS);
-                    break;
-                }
-                case REPEATED_EVENT:
-                {
-                    //printf("B2 LONG PRESS\n");
-                    TvRemoteSm_dispatch_event(&TvRemote, TvRemoteSm_EventId_B1_LONG_PRESS);
-                    break;
-                }
-                default:
-                    break;
-                }
+                handle_button_press(ev.value, &b1, &TvRemote);
                 break;
             }
             case B2_CODE:
             {
-                switch (ev.value)
-                {
-                case PRESSED_EVENT:
-                {
-                    //printf("B2 PRESS\n");
-                    TvRemoteSm_dispatch_event(&TvRemote, TvRemoteSm_EventId_B2_PRESS);
-                    /* code */
-                    break;
-                }
-                case REPEATED_EVENT:
-                {
-                    //printf("B2 LONG PRESS\n");
-                    TvRemoteSm_dispatch_event(&TvRemote, TvRemoteSm_EventId_B2_LONG_PRESS);
-                    break;
-                }
-                default:
-                    break;
-                }
+                handle_button_press(ev.value, &b2, &TvRemote);
                 break;
             }
             default:
+
                 break;
             }
         }
     }
     fflush(stdout);
     fprintf(stderr, "%s.\n", strerror(errno));
-    return EXIT_FAILURE;
-
-        // if (kbhit()) // If the keyboard is hit.
-        // {
-        //     if (b1_hit())
-        //     {
-        //         printw("B1 pressed\n");
-        //         b1_press_count++;
-        //         if (!b1_pressed)
-        //         {
-        //             b1_pressed = true;
-        //             b1_press_start = timeInMilliseconds();
-        //         }
-        //     }
-        //     if (b2_hit())
-        //     {
-        //         printw("B2 pressed\n");
-        //         b2_press_count++;
-        //         if (!b2_pressed)
-        //         {
-        //             b2_pressed = true;
-        //             b2_press_start = timeInMilliseconds();
-        //         }
-        //     }
-
-        //     // int ch = getch();
-        //     // // printw("Key pressed: %d\n", ch);
-        //     // switch(ch)
-        //     // {
-        //     //     case 119: // w
-        //     //     {
-        //     //         printw("w key pressed\n");
-        //     //         if (!b1_pressed)
-        //     //         {
-        //     //             b1_press_start = timeInMilliseconds();
-        //     //         }
-        //     //         // B1.vars.input_is_pressed = true;
-        //     //         break;
-        //     //     }
-        //     //     case 115: // s
-        //     //     {
-        //     //         printw("s key pressed\n");
-        //     //         if (!b2_pressed)
-        //     //         {
-        //     //             b2_press_start = timeInMilliseconds();
-        //     //         }
-        //     //         // B2.vars.input_is_pressed = true;
-        //     //         break;
-        //     //     }
-                
-        //     // }
-        // }
-        // else {
-        //     b1_pressed = false;
-        //     b1_press_count = 0;
-        //     b2_pressed = false;
-        //     b2_press_count = 0;
-        //     msleep(1);
-        // }
-
-    // }
-
-    // // Deallocates memory and ends ncurses.
-    // endwin();
-
-    // return 0;
+    return EXIT_SUCCESS;
 }
