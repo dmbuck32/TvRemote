@@ -7,15 +7,15 @@ using StateSmith.Input.Expansions;
 using StateSmith.Output.UserConfig;
 using StateSmith.Runner;
 
-// Run code generation for button first
-// NOTE!!! Each state machine has its own render config!
-SmRunner runner = new(diagramPath: "TvRemote.drawio.svg", new ButtonRenderConfig(), transpilerId: TranspilerId.C99);
-runner.Settings.stateMachineName = "ButtonSm";  // this is needed because the diagram has two state machines in it
-runner.Run();
+// // Run code generation for button first
+// // NOTE!!! Each state machine has its own render config!
+// SmRunner runner = new(diagramPath: "TvRemote.drawio.svg", new ButtonRenderConfig(), transpilerId: TranspilerId.C99);
+// runner.Settings.stateMachineName = "ButtonSm";  // this is needed because the diagram has two state machines in it
+// runner.Run();
 
 // Run code generation for TV state machine next
 // NOTE!!! Each state machine has its own render config!
-runner = new(diagramPath: "TvRemote.drawio.svg", new TvRemoteRenderConfig(), transpilerId: TranspilerId.C99);
+SmRunner runner = new(diagramPath: "TvRemote.drawio.svg", new TvRemoteRenderConfig(), transpilerId: TranspilerId.C99);
 runner.Settings.stateMachineName = "TvRemoteSm";  // this is needed because the diagram has two state machines in it
 runner.Run();
 
@@ -148,9 +148,9 @@ public class TvRemoteRenderConfig : IRenderConfigC
 
         string show(string message) => $"""printf({message})""";
 
-        string print_volume() => $"printf("%d", {VarsPath}volume)";
-        string print_brightness() => $"printf("%d", {VarsPath}brightness)";
-        string print_channel() => $"printf("%d", {VarsPath}channel)";
+        string print_volume() => $"""printf("%d", {VarsPath}volume"")""";
+        string print_brightness() => $"""printf("%d", {VarsPath}brightness)""";
+        string print_channel() => $"""printf("%d", {VarsPath}channel)""";
     }
 }
 

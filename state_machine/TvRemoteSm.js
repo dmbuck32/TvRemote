@@ -9,6 +9,7 @@ const MIN_VOLUME = 0;
 const MAX_CHANNEL = 256;
 const MIN_CHANNEL = 1;
 
+
 // Generated state machine
 class TvRemoteSm
 {
