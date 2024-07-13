@@ -148,7 +148,7 @@ public class TvRemoteRenderConfig : IRenderConfigC
 
         string show(string message) => $"""printf({message})""";
 
-        string print_volume() => $"""printf("%d", {VarsPath}volume"")""";
+        string print_volume() => $"""printf("%d", {VarsPath}volume)""";
         string print_brightness() => $"""printf("%d", {VarsPath}brightness)""";
         string print_channel() => $"""printf("%d", {VarsPath}channel)""";
     }

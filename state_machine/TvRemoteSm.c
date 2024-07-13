@@ -1006,7 +1006,7 @@ static void VOLUME_DOWN_enter(TvRemoteSm* sm)
         // Step 1: execute action `show("Volume Down");\nvolume_decrement();\nprint_volume()`
         printf("Volume Down");
         if (sm->vars.volume > MIN_VOLUME) { sm->vars.volume--; };
-        printf("%d", sm->vars.volume"")
+        printf("%d", sm->vars.volume)
     } // end of behavior for VOLUME_DOWN
 }
 
@@ -1080,7 +1080,7 @@ static void VOLUME_UP_enter(TvRemoteSm* sm)
         // Step 1: execute action `show("Volume Up");\nvolume_increment();\nprint_volume();`
         printf("Volume Up");
         if (sm->vars.volume < MAX_VOLUME) { sm->vars.volume++; };
-        printf("%d", sm->vars.volume"");
+        printf("%d", sm->vars.volume);
     } // end of behavior for VOLUME_UP
 }
 
