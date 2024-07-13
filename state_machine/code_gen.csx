@@ -45,6 +45,7 @@ public class ButtonRenderConfig : IRenderConfigC
         const unsigned int DEBOUNCE_TIMEOUT = 100;
 
         #include <sys/time.h>
+        #include <stddef.h>
 
         // Function to get the time in ms.
         long long timeInMilliseconds(void) {
@@ -123,9 +124,9 @@ public class TvRemoteRenderConfig : IRenderConfigC
     // Note that StateSmith does not parse the VariableDeclarations string. It outputs whatever is written there. 
     // Use the proper syntax for the output language you are generating for.
     string IRenderConfig.VariableDeclarations => """
-        unsigned short volume = 50;     
-        unsigned short brightness = 50;   
-        unsigned short channel = 1;
+        unsigned short volume;     
+        unsigned short brightness;   
+        unsigned short channel;
         """;
 
     public class TvRemoteExpansions : UserExpansionScriptBase

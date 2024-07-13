@@ -49,9 +49,9 @@ typedef struct TvRemoteSm TvRemoteSm;
 // State machine variables. Can be used for inputs, outputs, user variables...
 typedef struct TvRemoteSm_Vars
 {
-    unsigned short volume = 50;     
-    unsigned short brightness = 50;   
-    unsigned short channel = 1;
+    unsigned short volume;     
+    unsigned short brightness;   
+    unsigned short channel;
 } TvRemoteSm_Vars;
 
 
