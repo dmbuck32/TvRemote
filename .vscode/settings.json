@@ -6,6 +6,7 @@
     ],
     "files.associations": {
         "buttonsm.h": "c",
-        "tvremotesm.h": "c"
+        "tvremotesm.h": "c",
+        "time_utils.h": "c"
     },
 }

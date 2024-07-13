@@ -44,8 +44,6 @@ public class ButtonRenderConfig : IRenderConfigC
         const unsigned int LONG_PRESS_TIMEOUT = 800;
         const unsigned int DEBOUNCE_TIMEOUT = 100;
 
-        #include <sys/time.h>
-        #include <stddef.h>
         #include "../time_utils.h" // for timeInMilliseconds();
 
 
