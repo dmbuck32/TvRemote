@@ -8,12 +8,15 @@
 #include <stdlib.h>
 #include <string.h>
 #include <sys/time.h>
+#include <termios.h>
 #include <time.h>
 #include <unistd.h>
-#include "time_utils.h"
 
+// Key codes for B1 & B2.
 #define B1_CODE 17 // w
 #define B2_CODE 31 // b
+
+// Key event types.
 #define RELEASED_EVENT 0
 #define PRESSED_EVENT 1
 #define REPEATED_EVENT 2
@@ -41,6 +44,32 @@ int msleep(long msec)
     return res;
 }
 
+// Function to get the time in ms.
+long long timeInMilliseconds(void) {
+    struct timeval tv;
+
+    gettimeofday(&tv, NULL);
+    return (((long long)tv.tv_sec)*1000)+(tv.tv_usec/1000);
+}
+
+// logic comes from https://github.com/MichaelDipperstein/keypress/blob/master/keypress.c
+void console_echo(bool echo_off)
+{
+    unsigned char echo_bit;
+    if(echo_off)
+    {
+        echo_bit = ECHO; // Set to disable echo.
+    }
+    else {
+        echo_bit = 0; // Clear to enable echo.
+    }
+
+    struct termios state;
+    tcgetattr(STDIN_FILENO, &state);
+    state.c_lflag &= ~(echo_bit | ICANON);;
+    tcsetattr(STDIN_FILENO, TCSANOW, &state);
+}
+
 const unsigned int LONG_PRESS_TIMEOUT = 800; // ms.
 
 typedef struct KeyState {
@@ -51,9 +80,8 @@ typedef struct KeyState {
     int long_press_event;
 } KeyState;
 
-void handle_button_press(int value, KeyState* key, TvRemoteSm* remote) {
-
-    // printw("%d\n", value);
+void handle_button_press(int value, KeyState* key, TvRemoteSm* tv_remote)
+{
     switch (value)
     {
         case RELEASED_EVENT:
@@ -64,12 +92,11 @@ void handle_button_press(int value, KeyState* key, TvRemoteSm* remote) {
         }
         case PRESSED_EVENT:
         {
-            //printw("B1 PRESS\n");
             if (!key->pressed)
             {
                 key->pressed = true;
                 key->press_start_time = timeInMilliseconds();
-                TvRemoteSm_dispatch_event(remote, key->press_event);
+                TvRemoteSm_dispatch_event(tv_remote, key->press_event);
             }
             break;
         }
@@ -80,7 +107,7 @@ void handle_button_press(int value, KeyState* key, TvRemoteSm* remote) {
                 if ((timeInMilliseconds() - key->press_start_time) > LONG_PRESS_TIMEOUT)
                 {
                     key->long_press = true;
-                    TvRemoteSm_dispatch_event(remote, key->long_press_event);
+                    TvRemoteSm_dispatch_event(tv_remote, key->long_press_event);
                 }
             }
             break;
@@ -93,17 +120,16 @@ void handle_button_press(int value, KeyState* key, TvRemoteSm* remote) {
 
 int main(int argc, char ** argv)
 {
-    // init screen and sets up screen
-    initscr();
     // Don't echo key inputs.
-    noecho();
+    const bool ECHO_OFF = true;
+    console_echo(ECHO_OFF);
 
-    printw("Initializing TV remote state machine...\n");
+    printf("Initializing TV remote state machine...\n");
     TvRemoteSm TvRemote;
     TvRemoteSm_ctor(&TvRemote);
     TvRemoteSm_start(&TvRemote);
 
-    printw("Initalizing keys...\n");
+    printf("Initalizing keys...\n");
     KeyState b1 = {
         .pressed = false,
         .press_start_time = 0,
@@ -119,7 +145,9 @@ int main(int argc, char ** argv)
         .long_press_event = TvRemoteSm_EventId_B2_LONG_PRESS
     };
 
-    printw("Initializing key reader...\n");
+    printf("Initializing key reader...\n");
+
+    // Get keyboard events.
     const char *dev = "/dev/input/by-path/platform-i8042-serio-0-event-kbd";
     struct input_event ev;
     ssize_t n;
@@ -131,7 +159,7 @@ int main(int argc, char ** argv)
         return EXIT_FAILURE;
     }
 
-    printw("Starting loop.\n");
+    printf("Starting loop.\n");
     while(true)
     {
         n = read(fd, &ev, sizeof ev);
@@ -140,7 +168,7 @@ int main(int argc, char ** argv)
                 continue;
             else
                 break;
-        } else if (n != sizeof ev) {
+            } else if (n != sizeof ev) {
             errno = EIO;
             break;
         }
@@ -167,5 +195,7 @@ int main(int argc, char ** argv)
     }
     fflush(stdout);
     fprintf(stderr, "%s.\n", strerror(errno));
+    const bool ECHO_ON = false;
+    console_echo(ECHO_ON);
     return EXIT_SUCCESS;
 }

@@ -24,7 +24,6 @@ The following assumptions are present in this application:
 - The channel range is from [1, 256] inclusive
 - The channel change logic will wrap around (i.e channel up at 256 will go to 1)
 - The long-press timeout is 800 ms
-- The debounce timeout is 100 ms
 
 ## Functional Description
 

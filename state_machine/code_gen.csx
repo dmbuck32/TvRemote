@@ -7,23 +7,13 @@ using StateSmith.Input.Expansions;
 using StateSmith.Output.UserConfig;
 using StateSmith.Runner;
 
-// Run code generation for button first
-// NOTE!!! Each state machine has its own render config!
-SmRunner runner = new(diagramPath: "TvRemote.drawio.svg", new ButtonRenderConfig(), transpilerId: TranspilerId.C99);
-runner.Settings.stateMachineName = "ButtonSm";  // this is needed because the diagram has two state machines in it
-runner.Run();
 
 // Run code generation for TV state machine next
 // NOTE!!! Each state machine has its own render config!
-runner = new(diagramPath: "TvRemote.drawio.svg", new TvRemoteRenderConfig(), transpilerId: TranspilerId.C99);
+SmRunner runner = new(diagramPath: "TvRemote.drawio.svg", new TvRemoteRenderConfig(), transpilerId: TranspilerId.C99);
 runner.Settings.stateMachineName = "TvRemoteSm";  // this is needed because the diagram has two state machines in it
 runner.Run();
 
-// // Run code generation for JS button
-// // NOTE!!! Each state machine has its own render config!
-// runner = new(diagramPath: "TvRemote.drawio.svg", new ButtonJsRenderConfig(), transpilerId: TranspilerId.JavaScript);
-// runner.Settings.stateMachineName = "ButtonSm";  // this is needed because the diagram has two state machines in it
-// runner.Run();
 
 // Run code generation for TV state machine next
 // NOTE!!! Each state machine has its own render config!
@@ -35,55 +25,6 @@ runner.Run();
 #pragma warning disable IDE1006, CA1050 
 
 ///////////////////////////////////////////////////////////////////////////////////////
-
-// See https://github.com/StateSmith/tutorial-2/tree/main/lesson-2
-public class ButtonRenderConfig : IRenderConfigC
-{
-    string IRenderConfigC.CFileTop => """
-        // Constants used by the code.
-        const unsigned int LONG_PRESS_TIMEOUT = 800;
-        const unsigned int DEBOUNCE_TIMEOUT = 100;
-
-        #include "../time_utils.h" // for timeInMilliseconds();
-
-
-    """;
-    
-    string IRenderConfigC.CFileExtension => ".c";
-    string IRenderConfigC.HFileExtension => ".h";
-    string IRenderConfigC.CEnumDeclarer => "typedef enum __attribute__((packed)) {enumName}";
-
-    string IRenderConfig.VariableDeclarations => """
-        // Note! This example below uses bit fields just to show that you can. They aren't required.
-
-        // This can be made to be 11 bits if RAM is at a premium. See laser tag menu example.
-        unsigned long long timer_started_at_ms;
-
-        unsigned short input_is_pressed : 1;     // input
-        unsigned short output_event_press : 1;   // output
-        unsigned short output_event_release : 1; // output
-        unsigned short output_event_long : 1;    // output
-        """;
-
-    // See https://github.com/StateSmith/tutorial-2/tree/main/lesson-3
-    public class Expansions : UserExpansionScriptBase
-    {
-        // inputs
-        public string is_pressed => VarsPath + "input_is_pressed";
-        public string is_released => $"(!{is_pressed})";
-
-        // outputs
-        public string output_event(string eventName) => $"{VarsPath}output_event_{eventName.ToLower()} = true";
-
-        // time stuff
-        public string now_ms => $"timeInMilliseconds()";
-        public string timer_started_at_ms => AutoVarName();
-        public string timer_ms => $"({now_ms} - {timer_started_at_ms})";   // unsigned math works even with ms roll over
-        public string reset_timer() => $"{timer_started_at_ms} = {now_ms}";
-
-        public string is_debounced => $"({timer_ms} >= DEBOUNCE_TIMEOUT)";
-    }
-}
 
 // This class gives StateSmith the info it needs to generate working code. This class can have any name.
 public class TvRemoteRenderConfig : IRenderConfigC
@@ -143,47 +84,6 @@ public class TvRemoteRenderConfig : IRenderConfigC
         string print_channel() => $"""printf("%d\n", {VarsPath}channel)""";
     }
 }
-
-// public class ButtonJsRenderConfig : IRenderConfig
-// {
-
-//     string IRenderConfig.FileTop => """
-    
-//         // Constants used by the code.
-//         const LONG_PRESS_TIMEOUT = 800;
-//         const DEBOUNCE_TIMEOUT = 100;
-
-//     """;
-
-//     string IRenderConfig.VariableDeclarations => """
-//         timer_started_at_ms: 0,
-
-//         input_is_pressed: false,     // input
-//         output_event_press: false,   // output
-//         output_event_release: false, // output
-//         output_event_long: false,    // output
-//         """;
-
-//     // See https://github.com/StateSmith/tutorial-2/tree/main/lesson-3
-//     public class MyExpansions : UserExpansionScriptBase
-//     {
-//         // inputs
-//         public string is_pressed => VarsPath + "input_is_pressed";
-//         public string is_released => $"(!!({is_pressed}))";
-
-//         // outputs
-//         // public string output_event(string eventName) => $"{VarsPath}output_event_{eventName.ToLower()} = true";
-//         public string output_event(string eventName) => $"{VarsPath}output_event_{eventName.ToLower()} = true; console.log('output_event_{eventName.ToLower()}')";
-
-//         // time stuff
-//         public string now_ms => $"Date.now().valueOf()";
-//         public string timer_started_at_ms => AutoVarName();
-//         public string timer_ms => $"({now_ms} - {timer_started_at_ms})";   // unsigned math works even with ms roll over
-//         public string reset_timer() => $"{timer_started_at_ms} = {now_ms}";
-
-//         public string is_debounced => $"(!!({timer_ms} >= DEBOUNCE_TIMEOUT))";
-//     }
-// }
 
 public class TvRemoteJsRenderConfig : IRenderConfig
 {
