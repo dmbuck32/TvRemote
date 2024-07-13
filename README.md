@@ -43,12 +43,6 @@ In this mode, the user can short-press the `B1` button to increase the brightnes
 
 ## Application design diagram
 
-The TV Remote comprises of 2 state machines:
-
 <img src="state_machine/TvRemote.drawio.svg">
 
 NOTE: The documentation was crafted to be compatible with the [StateSmith](https://github.com/StateSmith/StateSmith) tool.
-
-### Test
-
-A sample derived from this state machine can be found [here](state_machine/index.html).

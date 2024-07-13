@@ -579,7 +579,7 @@ class TvRemoteSm
         {
             // Step 1: execute action `show("Channel Down");\nchannel_decrement();\nprint_channel();`
             console.log("Channel Down");
-            this.vars.channel--; if (this.vars.channel < MIN_CHANNEL) { this.vars.channel = MAX_CHANNEL; };
+            if (this.vars.channel <= MIN_CHANNEL) { this.vars.channel = MAX_CHANNEL; } else { this.vars.channel--; };
             console.log(this.vars.channel);
         } // end of behavior for CHANNEL_DOWN
     }
@@ -718,7 +718,7 @@ class TvRemoteSm
         {
             // Step 1: execute action `show("Channel Up");\nchannel_increment();\nprint_channel();`
             console.log("Channel Up");
-            this.vars.channel++; if (this.vars.channel > MAX_CHANNEL) { this.vars.channel = MIN_CHANNEL; };
+            if (this.vars.channel >= MAX_CHANNEL) { this.vars.channel = MIN_CHANNEL; } else { this.vars.channel++; };
             console.log(this.vars.channel);
         } // end of behavior for CHANNEL_UP
     }

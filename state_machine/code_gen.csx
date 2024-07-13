@@ -74,8 +74,8 @@ public class TvRemoteRenderConfig : IRenderConfigC
         string brightness_increment() => $"if ({VarsPath}brightness < MAX_BRIGHTNESS) {{ {VarsPath}brightness++; }}";
         string brightness_decrement() => $"if ({VarsPath}brightness > MIN_BRIGHTNESS) {{ {VarsPath}brightness--; }}";
 
-        string channel_increment() => $"{VarsPath}channel++; if ({VarsPath}channel > MAX_CHANNEL) {{ {VarsPath}channel = MIN_CHANNEL; }}";
-        string channel_decrement() => $"{VarsPath}channel--; if ({VarsPath}channel < MIN_CHANNEL) {{ {VarsPath}channel = MAX_CHANNEL; }}";
+        string channel_increment() => $"if ({VarsPath}channel > MAX_CHANNEL) {{ {VarsPath}channel = MIN_CHANNEL; }} else {{ {VarsPath}channel++; }}";
+        string channel_decrement() => $"if ({VarsPath}channel <= MIN_CHANNEL) {{ {VarsPath}channel = MAX_CHANNEL; }} else {{ {VarsPath}channel--; }}";
 
         string show(string message) => $"""printf({message} "\n")""";
 
@@ -122,8 +122,8 @@ public class TvRemoteJsRenderConfig : IRenderConfig
         string brightness_increment() => $"if ({VarsPath}brightness < MAX_BRIGHTNESS) {{ {VarsPath}brightness++; }}";
         string brightness_decrement() => $"if ({VarsPath}brightness > MIN_BRIGHTNESS) {{ {VarsPath}brightness--; }}";
 
-        string channel_increment() => $"{VarsPath}channel++; if ({VarsPath}channel > MAX_CHANNEL) {{ {VarsPath}channel = MIN_CHANNEL; }}";
-        string channel_decrement() => $"{VarsPath}channel--; if ({VarsPath}channel < MIN_CHANNEL) {{ {VarsPath}channel = MAX_CHANNEL; }}";
+        string channel_increment() => $"if ({VarsPath}channel >= MAX_CHANNEL) {{ {VarsPath}channel = MIN_CHANNEL; }} else {{ {VarsPath}channel++; }}";
+        string channel_decrement() => $"if ({VarsPath}channel <= MIN_CHANNEL) {{ {VarsPath}channel = MAX_CHANNEL; }} else {{ {VarsPath}channel--; }}";
 
         string show(string message) => $"console.log({message})";
 
