@@ -7,8 +7,7 @@ find_package(Curses REQUIRED)
 
 add_executable(remote 
     main.c
-    state_machine/ButtonSm.c
-    state_machine/TvRemoteSm.h )
+    state_machine/TvRemoteSm.c)
 set_property(TARGET remote PROPERTY C_STANDARD 11)
 target_link_libraries(remote -lcurses)
 target_include_directories(remote PUBLIC ${CMAKE_CURRENT_SOURCE_DIR})

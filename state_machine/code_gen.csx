@@ -114,7 +114,7 @@ public class TvRemoteRenderConfig : IRenderConfigC
         """;
 
     string IRenderConfigC.CFileIncludes => """
-        #include "Arduino.h"
+        #include <stdio.h> // For fprint.
         """;
     
     string IRenderConfigC.CFileExtension => ".c";
@@ -148,9 +148,9 @@ public class TvRemoteRenderConfig : IRenderConfigC
 
         string show(string message) => $"""printf({message})""";
 
-        string print_volume() => $"printf({VarsPath}volume)";
-        string print_brightness() => $"printf({VarsPath}brightness)";
-        string print_channel() => $"printf({VarsPath}channel)";
+        string print_volume() => $"printf("%d", {VarsPath}volume)";
+        string print_brightness() => $"printf("%d", {VarsPath}brightness)";
+        string print_channel() => $"printf("%d", {VarsPath}channel)";
     }
 }
 
