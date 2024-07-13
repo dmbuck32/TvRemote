@@ -788,7 +788,7 @@ static void CHANNEL_UP_enter(TvRemoteSm* sm)
     {
         // Step 1: execute action `show("Channel Up");\nchannel_increment();\nprint_channel();`
         printf("Channel Up" "\n");
-        if (sm->vars.channel > MAX_CHANNEL) { sm->vars.channel = MIN_CHANNEL; } else { sm->vars.channel++; };
+        if (sm->vars.channel >= MAX_CHANNEL) { sm->vars.channel = MIN_CHANNEL; } else { sm->vars.channel++; };
         printf("%d\n", sm->vars.channel);
     } // end of behavior for CHANNEL_UP
 }
