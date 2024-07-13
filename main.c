@@ -11,6 +11,7 @@
 #include <sys/time.h>
 #include <time.h>
 #include <unistd.h>
+#include "time_utils.h"
 
 static const char *const evval[3] = {
     "RELEASED",
@@ -78,20 +79,6 @@ int msleep(long msec)
     return res;
 }
 
-// Function to get the time in ms.
-long long timeInMilliseconds(void) {
-    struct timeval tv;
-
-    gettimeofday(&tv,NULL);
-    return (((long long)tv.tv_sec)*1000)+(tv.tv_usec/1000);
-}
-
-
-
-struct KeyInfo {
-    unsigned long long initial_press;
-};
-
 unsigned long long b1_press_start = 0;
 unsigned int b1_press_count = 0;
 bool b1_pressed = false;
@@ -143,11 +130,11 @@ int main(int argc, char ** argv)
                 continue;
             else
                 break;
-        } else
-        if (n != sizeof ev) {
+        } else if (n != sizeof ev) {
             errno = EIO;
             break;
         }
+
         if (ev.type == EV_KEY && ev.value >= 0 && ev.value <= 2)
         {
             switch (ev.code)
@@ -156,21 +143,16 @@ int main(int argc, char ** argv)
             {
                 switch (ev.value)
                 {
-                case RELEASED_EVENT:
-                    /* code */
-                    break;
                 case PRESSED_EVENT:
                 {
-                    printf("B1 PRESS\n");
+                    //printf("B1 PRESS\n");
                     TvRemoteSm_dispatch_event(&TvRemote, TvRemoteSm_EventId_B1_PRESS);
-                    /* code */
                     break;
                 }
                 case REPEATED_EVENT:
                 {
-                    printf("B2 LONG PRESS\n");
+                    //printf("B2 LONG PRESS\n");
                     TvRemoteSm_dispatch_event(&TvRemote, TvRemoteSm_EventId_B1_LONG_PRESS);
-                    /* code */
                     break;
                 }
                 default:
@@ -182,21 +164,17 @@ int main(int argc, char ** argv)
             {
                 switch (ev.value)
                 {
-                case RELEASED_EVENT:
-                    /* code */
-                    break;
                 case PRESSED_EVENT:
                 {
-                    printf("B2 PRESS\n");
+                    //printf("B2 PRESS\n");
                     TvRemoteSm_dispatch_event(&TvRemote, TvRemoteSm_EventId_B2_PRESS);
                     /* code */
                     break;
                 }
                 case REPEATED_EVENT:
                 {
-                    printf("B2 LONG PRESS\n");
+                    //printf("B2 LONG PRESS\n");
                     TvRemoteSm_dispatch_event(&TvRemote, TvRemoteSm_EventId_B2_LONG_PRESS);
-                    /* code */
                     break;
                 }
                 default:
@@ -208,8 +186,6 @@ int main(int argc, char ** argv)
                 break;
             }
         }
-            printf("%s 0x%04x (%d)\n", evval[ev.value], (int)ev.code, (int)ev.code);
-
     }
     fflush(stdout);
     fprintf(stderr, "%s.\n", strerror(errno));

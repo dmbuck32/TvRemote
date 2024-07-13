@@ -7,15 +7,15 @@ using StateSmith.Input.Expansions;
 using StateSmith.Output.UserConfig;
 using StateSmith.Runner;
 
-// // Run code generation for button first
-// // NOTE!!! Each state machine has its own render config!
-// SmRunner runner = new(diagramPath: "TvRemote.drawio.svg", new ButtonRenderConfig(), transpilerId: TranspilerId.C99);
-// runner.Settings.stateMachineName = "ButtonSm";  // this is needed because the diagram has two state machines in it
-// runner.Run();
+// Run code generation for button first
+// NOTE!!! Each state machine has its own render config!
+SmRunner runner = new(diagramPath: "TvRemote.drawio.svg", new ButtonRenderConfig(), transpilerId: TranspilerId.C99);
+runner.Settings.stateMachineName = "ButtonSm";  // this is needed because the diagram has two state machines in it
+runner.Run();
 
 // Run code generation for TV state machine next
 // NOTE!!! Each state machine has its own render config!
-SmRunner runner = new(diagramPath: "TvRemote.drawio.svg", new TvRemoteRenderConfig(), transpilerId: TranspilerId.C99);
+runner = new(diagramPath: "TvRemote.drawio.svg", new TvRemoteRenderConfig(), transpilerId: TranspilerId.C99);
 runner.Settings.stateMachineName = "TvRemoteSm";  // this is needed because the diagram has two state machines in it
 runner.Run();
 
@@ -46,15 +46,7 @@ public class ButtonRenderConfig : IRenderConfigC
 
         #include <sys/time.h>
         #include <stddef.h>
-
-        // Function to get the time in ms.
-        long long timeInMilliseconds(void) {
-            struct timeval tv;
-
-            gettimeofday(&tv,NULL);
-            return (((long long)tv.tv_sec)*1000)+(tv.tv_usec/1000);
-        }
-
+        #include "../time_utils.h" // for timeInMilliseconds();
 
 
     """;
