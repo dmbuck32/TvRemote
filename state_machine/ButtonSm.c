@@ -266,8 +266,8 @@ static void CONFIRMING_LONG_do(ButtonSm* sm)
     sm->ancestor_event_handler = PRESSED_do;
     
     // CONFIRMING_LONG behavior
-    // uml: do [timer_ms > LONG_PRESS_DELAY] TransitionTo(LONG_PRESS)
-    if ((timeInMilliseconds() - sm->vars.timer_started_at_ms) > LONG_PRESS_DELAY)
+    // uml: do [timer_ms > LONG_PRESS_TIMEOUT] TransitionTo(LONG_PRESS)
+    if ((timeInMilliseconds() - sm->vars.timer_started_at_ms) > LONG_PRESS_TIMEOUT)
     {
         // Step 1: Exit states until we reach `PRESSED` state (Least Common Ancestor for transition).
         CONFIRMING_LONG_exit(sm);
