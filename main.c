@@ -2,7 +2,8 @@
 #include <unistd.h>
 #include <time.h>
 #include <errno.h>
-#include <key.h>
+#include <state_machine/ButtonSm.h>
+#include <state_machine/TvRemoteSm.h>
 
 // https://stackoverflow.com/questions/4025891/create-a-function-to-check-for-key-press-in-unix-using-ncurses
 int kbhit(void)
