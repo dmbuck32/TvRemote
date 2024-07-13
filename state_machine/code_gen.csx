@@ -7,15 +7,15 @@ using StateSmith.Input.Expansions;
 using StateSmith.Output.UserConfig;
 using StateSmith.Runner;
 
-// // Run code generation for button first
-// // NOTE!!! Each state machine has its own render config!
-// SmRunner runner = new(diagramPath: "TvRemote.drawio.svg", new ButtonRenderConfig(), transpilerId: TranspilerId.C99);
-// runner.Settings.stateMachineName = "ButtonSm";  // this is needed because the diagram has two state machines in it
-// runner.Run();
+// Run code generation for button first
+// NOTE!!! Each state machine has its own render config!
+SmRunner runner = new(diagramPath: "TvRemote.drawio.svg", new ButtonRenderConfig(), transpilerId: TranspilerId.C99);
+runner.Settings.stateMachineName = "ButtonSm";  // this is needed because the diagram has two state machines in it
+runner.Run();
 
 // Run code generation for TV state machine next
 // NOTE!!! Each state machine has its own render config!
-SmRunner runner = new(diagramPath: "TvRemote.drawio.svg", new TvRemoteRenderConfig(), transpilerId: TranspilerId.C99);
+runner = new(diagramPath: "TvRemote.drawio.svg", new TvRemoteRenderConfig(), transpilerId: TranspilerId.C99);
 runner.Settings.stateMachineName = "TvRemoteSm";  // this is needed because the diagram has two state machines in it
 runner.Run();
 
@@ -37,54 +37,62 @@ runner.Run();
 ///////////////////////////////////////////////////////////////////////////////////////
 
 // See https://github.com/StateSmith/tutorial-2/tree/main/lesson-2
-// public class ButtonRenderConfig : IRenderConfigC
-// {
-//     string IRenderConfigC.CFileTop => """
-//         // Constants used by the code.
-//         const unsigned int LONG_PRESS_TIMEOUT = 800;
-//         const unsigned int DEBOUNCE_TIMEOUT = 100;
+public class ButtonRenderConfig : IRenderConfigC
+{
+    string IRenderConfigC.CFileTop => """
+        // Constants used by the code.
+        const unsigned int LONG_PRESS_TIMEOUT = 800;
+        const unsigned int DEBOUNCE_TIMEOUT = 100;
+
+        #include <sys/time.h>
+
+        // Function to get the time in ms.
+        long long timeInMilliseconds(void) {
+            struct timeval tv;
+
+            gettimeofday(&tv,NULL);
+            return (((long long)tv.tv_sec)*1000)+(tv.tv_usec/1000);
+        }
 
 
-//     """;
-//     string IRenderConfigC.CFileIncludes => """
-//         #include "Arduino.h"
-//         """;
+
+    """;
     
-//     string IRenderConfigC.CFileExtension => ".c";
-//     string IRenderConfigC.HFileExtension => ".h";
-//     string IRenderConfigC.CEnumDeclarer => "typedef enum __attribute__((packed)) {enumName}";
+    string IRenderConfigC.CFileExtension => ".c";
+    string IRenderConfigC.HFileExtension => ".h";
+    string IRenderConfigC.CEnumDeclarer => "typedef enum __attribute__((packed)) {enumName}";
 
-//     string IRenderConfig.VariableDeclarations => """
-//         // Note! This example below uses bit fields just to show that you can. They aren't required.
+    string IRenderConfig.VariableDeclarations => """
+        // Note! This example below uses bit fields just to show that you can. They aren't required.
 
-//         // This can be made to be 11 bits if RAM is at a premium. See laser tag menu example.
-//         uint32_t timer_started_at_ms;
+        // This can be made to be 11 bits if RAM is at a premium. See laser tag menu example.
+        unsigned long long timer_started_at_ms;
 
-//         unsigned short input_is_pressed : 1;     // input
-//         unsigned short output_event_press : 1;   // output
-//         unsigned short output_event_release : 1; // output
-//         unsigned short output_event_long : 1;    // output
-//         """;
+        unsigned short input_is_pressed : 1;     // input
+        unsigned short output_event_press : 1;   // output
+        unsigned short output_event_release : 1; // output
+        unsigned short output_event_long : 1;    // output
+        """;
 
-//     // See https://github.com/StateSmith/tutorial-2/tree/main/lesson-3
-//     public class Expansions : UserExpansionScriptBase
-//     {
-//         // inputs
-//         public string is_pressed => VarsPath + "input_is_pressed";
-//         public string is_released => $"(!{is_pressed})";
+    // See https://github.com/StateSmith/tutorial-2/tree/main/lesson-3
+    public class Expansions : UserExpansionScriptBase
+    {
+        // inputs
+        public string is_pressed => VarsPath + "input_is_pressed";
+        public string is_released => $"(!{is_pressed})";
 
-//         // outputs
-//         public string output_event(string eventName) => $"{VarsPath}output_event_{eventName.ToLower()} = true";
+        // outputs
+        public string output_event(string eventName) => $"{VarsPath}output_event_{eventName.ToLower()} = true";
 
-//         // time stuff
-//         public string now_ms => $"millis()";   // directly calls Arduino C++ code
-//         public string timer_started_at_ms => AutoVarName();
-//         public string timer_ms => $"({now_ms} - {timer_started_at_ms})";   // unsigned math works even with ms roll over
-//         public string reset_timer() => $"{timer_started_at_ms} = {now_ms}";
+        // time stuff
+        public string now_ms => $"timeInMilliseconds()";
+        public string timer_started_at_ms => AutoVarName();
+        public string timer_ms => $"({now_ms} - {timer_started_at_ms})";   // unsigned math works even with ms roll over
+        public string reset_timer() => $"{timer_started_at_ms} = {now_ms}";
 
-//         public string is_debounced => $"({timer_ms} >= DEBOUNCE_TIMEOUT)";
-//     }
-// }
+        public string is_debounced => $"({timer_ms} >= DEBOUNCE_TIMEOUT)";
+    }
+}
 
 // This class gives StateSmith the info it needs to generate working code. This class can have any name.
 public class TvRemoteRenderConfig : IRenderConfigC
