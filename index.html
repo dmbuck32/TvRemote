@@ -1,15 +1,14 @@
 <!DOCTYPE html>
 <html>
-    <!-- generated state machine files -->
+    <!-- generated state machine file. -->
     <script src="TvRemoteSm.js"></script>
+    <!-- long-press event generator. -->
     <script src="long-press-event.min.js"></script>
     <script>
         let tvStateMachine = new TvRemoteSm();
         tvStateMachine.start();
 
-        function pressButton(sm, event) {
-            sm.dispatchEvent(event);
-        }
+        // Handler for long-button press.
         document.addEventListener('long-press', function(e) {
             if (e.target.dataset.name === "B1") {
                 // console.log("B1_LONG_PRESS");
@@ -20,6 +19,7 @@
             }
         });
 
+        // Handler for short-button press.
         document.addEventListener("pointerdown", function(e) {
             if (e.target.dataset.name === "B1") {
                 // console.log("B1_PRESS");
